@@ -1,6 +1,10 @@
 var React = require('react');
 
 var Repos = React.createClass({
+	proptypes: {
+		username: React.PropTypes.string.isRequired,
+		repos: React.PropTypes.array.isRequired
+	},
 	render: function(){
 		return (
 			<div> Repos <br />
