@@ -23657,6 +23657,9 @@
 			var childRef = this.ref.child(this.getParams().username);
 			this.bindAsArray(childRef, 'notes');
 		},
+		handleAddNote: function handleAddNote(newNote) {
+			this.ref.child(this.getParams().username).set(this.state.notes.concat([newNote]));
+		},
 		componentWillUnmount: function componentWillUnmount() {
 			this.unbind('notes');
 		},
@@ -23678,7 +23681,9 @@
 				React.createElement(
 					'div',
 					{ className: 'col-md-4' },
-					React.createElement(Notes, { username: username, notes: this.state.notes })
+					React.createElement(Notes, { username: username,
+						notes: this.state.notes,
+						addNote: this.handleAddNote })
 				)
 			);
 		}
@@ -23760,13 +23765,15 @@
 
 	var React = __webpack_require__(1);
 	var NotesList = __webpack_require__(203);
+	var AddNote = __webpack_require__(206);
 
 	var Notes = React.createClass({
 		displayName: 'Notes',
 
 		propTypes: {
 			username: React.PropTypes.string.isRequired,
-			notes: React.PropTypes.array.isRequired
+			notes: React.PropTypes.array.isRequired,
+			addNote: React.PropTypes.func.isRequired
 		},
 		render: function render() {
 			return React.createElement(
@@ -23781,6 +23788,7 @@
 					this.props.username,
 					' '
 				),
+				React.createElement(AddNote, { username: this.props.username, addNote: this.props.addNote }),
 				React.createElement(NotesList, { notes: this.props.notes })
 			);
 		}
@@ -24256,6 +24264,46 @@
 
 	module.exports = Firebase;
 
+
+/***/ },
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var AddNote = React.createClass({
+		displayName: 'AddNote',
+
+		propTypes: {
+			userName: React.PropTypes.string.isRequired,
+			addNote: React.PropTypes.func.isRequired
+		},
+		handleSubmit: function handleSubmit() {
+			var newNote = this.refs.note.getDOMNode().value;
+			this.refs.note.getDOMNode().value = '';
+			this.props.addNote(newNote);
+		},
+		render: function render() {
+			return React.createElement(
+				'div',
+				{ className: 'input-group' },
+				React.createElement('input', { type: 'text', className: 'form-control', ref: 'note', placeholder: 'Add New Note' }),
+				React.createElement(
+					'span',
+					{ className: 'input-group-btn' },
+					React.createElement(
+						'button',
+						{ className: 'btn btn-default', type: 'button', onClick: this.handleSubmit },
+						'Submit'
+					)
+				)
+			);
+		}
+	});
+
+	module.exports = AddNote;
 
 /***/ }
 /******/ ]);
