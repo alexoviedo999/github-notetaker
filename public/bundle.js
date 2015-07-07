@@ -23698,8 +23698,7 @@
 				repos: []
 			};
 		},
-		componentDidMount: function componentDidMount() {
-			this.ref = new Firebase('https://github-notess.firebaseio.com');
+		init: function init() {
 			var childRef = this.ref.child(this.getParams().username);
 			this.bindAsArray(childRef, 'notes');
 
@@ -23710,11 +23709,19 @@
 				});
 			}).bind(this));
 		},
+		componentDidMount: function componentDidMount() {
+			this.ref = new Firebase('https://github-notess.firebaseio.com');
+			this.init();
+		},
 		handleAddNote: function handleAddNote(newNote) {
 			this.ref.child(this.getParams().username).set(this.state.notes.concat([newNote]));
 		},
 		componentWillUnmount: function componentWillUnmount() {
 			this.unbind('notes');
+		},
+		componentWillReceiveProps: function componentWillReceiveProps() {
+			this.unbind('notes');
+			this.init();
 		},
 		render: function render() {
 			var username = this.getParams().username;
@@ -23856,62 +23863,151 @@
 /* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var React = __webpack_require__(1);
 
-	var UserProfile = React.createClass({
-		displayName: 'UserProfile',
+	var UserProfiles = React.createClass({
+	  displayName: "UserProfiles",
 
-		propTypes: {
-			username: React.PropTypes.string.isRequired,
-			bio: React.PropTypes.object.isRequired
-		},
-		render: function render() {
-			return React.createElement(
-				'div',
-				null,
-				' User Profile ',
-				React.createElement('br', null),
-				'Username: ',
-				this.props.username,
-				' ',
-				React.createElement('br', null),
-				'Bio: ',
-				this.props.bio
-			);
-		}
+	  propTypes: {
+	    username: React.PropTypes.string.isRequired,
+	    bio: React.PropTypes.object.isRequired
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement(
+	        "h3",
+	        null,
+	        " User Profile "
+	      ),
+	      React.createElement(
+	        "ul",
+	        { className: "list-group" },
+	        this.props.bio.avatar_url && React.createElement(
+	          "li",
+	          { className: "list-group-item" },
+	          " ",
+	          React.createElement("img", { src: this.props.bio.avatar_url, className: "img-rounded img-responsive" })
+	        ),
+	        this.props.bio.name && React.createElement(
+	          "li",
+	          { className: "list-group-item" },
+	          "Name: ",
+	          this.props.bio.name
+	        ),
+	        this.props.bio.login && React.createElement(
+	          "li",
+	          { className: "list-group-item" },
+	          "Username: ",
+	          this.props.bio.login
+	        ),
+	        this.props.bio.email && React.createElement(
+	          "li",
+	          { className: "list-group-item" },
+	          "Email: ",
+	          this.props.bio.email
+	        ),
+	        this.props.bio.location && React.createElement(
+	          "li",
+	          { className: "list-group-item" },
+	          "Location: ",
+	          this.props.bio.location
+	        ),
+	        this.props.bio.company && React.createElement(
+	          "li",
+	          { className: "list-group-item" },
+	          "Company: ",
+	          this.props.bio.company
+	        ),
+	        this.props.bio.followers && React.createElement(
+	          "li",
+	          { className: "list-group-item" },
+	          "Followers: ",
+	          this.props.bio.followers
+	        ),
+	        this.props.bio.following && React.createElement(
+	          "li",
+	          { className: "list-group-item" },
+	          "Following: ",
+	          this.props.bio.following
+	        ),
+	        this.props.bio.following && React.createElement(
+	          "li",
+	          { className: "list-group-item" },
+	          "Public Repos: ",
+	          this.props.bio.public_repos
+	        ),
+	        this.props.bio.blog && React.createElement(
+	          "li",
+	          { className: "list-group-item" },
+	          "Blog: ",
+	          React.createElement(
+	            "a",
+	            { href: this.props.bio.blog },
+	            " ",
+	            this.props.bio.blog
+	          )
+	        )
+	      )
+	    );
+	  }
 	});
 
-	module.exports = UserProfile;
+	module.exports = UserProfiles;
 
 /***/ },
 /* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var React = __webpack_require__(1);
 
 	var Repos = React.createClass({
-		displayName: 'Repos',
+		displayName: "Repos",
 
 		proptypes: {
 			username: React.PropTypes.string.isRequired,
 			repos: React.PropTypes.array.isRequired
 		},
 		render: function render() {
+			var repos = this.props.repos.map(function (repo, index) {
+				return React.createElement(
+					"li",
+					{ className: "list-group-item", key: index },
+					repo.html_url && React.createElement(
+						"h4",
+						null,
+						React.createElement(
+							"a",
+							{ href: repo.html_url },
+							repo.name
+						)
+					),
+					repo.description && React.createElement(
+						"p",
+						null,
+						" ",
+						repo.description
+					)
+				);
+			});
 			return React.createElement(
-				'div',
+				"div",
 				null,
-				' Repos ',
-				React.createElement('br', null),
-				'Username: ',
-				this.props.username,
-				' ',
-				React.createElement('br', null),
-				'Repos: ',
-				this.props.repos
+				React.createElement(
+					"h3",
+					null,
+					" User Repos "
+				),
+				React.createElement(
+					"ul",
+					{ className: "list-group" },
+					repos
+				)
 			);
 		}
 	});
